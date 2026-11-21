@@ -39,7 +39,7 @@ export function LoginForm() {
     }
   }
 
-  return <main className="admin-login-page">
+  return <main id="main" className="admin-login-page">
     <section className="admin-login-card" aria-labelledby="login-title">
       <Link href="/" className="admin-wordmark"><span className="admin-seal"><Landmark size={20}/></span><span><strong>Town of Chilhowie</strong><small>Staff workspace</small></span></Link>
       <p className="admin-kicker">STAFF ACCESS</p>

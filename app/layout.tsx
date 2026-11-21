@@ -49,6 +49,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+        <a className="skip-link" href="#main">Skip to main content</a>
         <SiteBanners initialAlert={initialAlert} />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
