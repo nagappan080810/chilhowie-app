@@ -136,7 +136,7 @@ export function AdminDashboard({ staffName }: { staffName: string }) {
 
   const preview = { ...draft, id: 'admin-preview', startsAt: draft.startsAt ? etToISO(draft.startsAt) : new Date().toISOString(), endsAt: draft.endsAt ? etToISO(draft.endsAt) : undefined, updatedBy: staffName, updatedAt: new Date().toISOString(), link: draft.linkLabel && draft.linkHref ? { label: draft.linkLabel, href: draft.linkHref } : undefined, isSample: false }
 
-  return <main className="admin-page">
+  return <main id="main" className="admin-page">
     <header className="admin-topbar"><Link href="/" className="admin-wordmark"><span className="admin-seal"><ShieldCheck size={20}/></span><span><strong>Town of Chilhowie</strong><small>Staff dashboard</small></span></Link><div className="admin-top-actions"><span>{staffName}</span><Link href="/" target="_blank">View website <ExternalLink size={14}/></Link><button type="button" onClick={signOut}><LogOut size={15}/> Sign out</button></div></header>
     <div className="admin-layout"><aside className="admin-sidebar" aria-label="Dashboard sections"><p className="admin-nav-label">CONTENT</p><a className="admin-nav-active" href="#site-alert"><BellRing size={17}/> Site alert</a>{comingAdmin.map(({ label, icon: Icon }) => <span className="admin-nav-disabled" key={label}><Icon size={16}/>{label}<small>Coming in full build</small></span>)}</aside>
       <div className="admin-main"><div className="admin-page-heading"><div><p className="admin-kicker">TOWN OF CHILHOWIE · DEMO ADMIN</p><h1>Site alert</h1><p>Publish a clear, timely notice across the town website.</p></div><Link className="admin-view-link" href="/" target="_blank">View website <ArrowUpRight size={16}/></Link></div>
