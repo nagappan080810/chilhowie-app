@@ -5,6 +5,7 @@ import useSWR from 'swr'
 import Link from 'next/link'
 import { ArrowUpRight, BellRing, CalendarClock, Check, ChevronRight, CircleAlert, ExternalLink, FileText, Info, LogOut, Newspaper, ShieldCheck, Users, BriefcaseBusiness } from 'lucide-react'
 import type { AlertAuditEntry, AlertLevel, SiteAlert } from '@/lib/alert-types'
+import { AlertDrafter } from '@/components/admin/alert-drafter'
 
 const fetcher = async (url: string) => {
   const response = await fetch(url, { cache: 'no-store' })
@@ -146,6 +147,7 @@ export function AdminDashboard({ staffName }: { staffName: string }) {
         {editing && <form className="admin-editor" onSubmit={publish} noValidate>
           <div className="admin-editor-heading"><div><p className="admin-kicker">ALERT EDITOR</p><h2>{alert ? 'Edit site alert' : 'Create site alert'}</h2></div><button type="button" className="admin-text-button" onClick={() => { setEditing(false); setFieldErrors({}) }}>Cancel</button></div>
           {error && <div ref={errorSummaryRef} className="admin-error-summary" role="alert" tabIndex={-1}><strong>There is a problem with this alert.</strong><p>{error}</p></div>}
+          <AlertDrafter onDraft={(patch) => { setDraft((current) => ({ ...current, ...patch, active: true })); setFieldErrors({}) }}/>
           <div className="admin-templates"><span>Quick templates</span>{quickTemplates.map((template) => <button key={template.label} type="button" onClick={() => { setDraft((current) => ({ ...current, ...template.draft })); setFieldErrors({}) }}>{template.label}</button>)}</div>
           <fieldset className="admin-fieldset"><legend>Alert type</legend><div className="admin-level-options">{(['emergency', 'notice', 'info'] as const).map((level) => <label key={level} className={`admin-level-card level-${level} ${draft.level === level ? 'selected' : ''}`}><input type="radio" name="level" value={level} checked={draft.level === level} onChange={() => update('level', level)}/><span>{level === 'emergency' ? <CircleAlert size={19}/> : level === 'notice' ? <BellRing size={19}/> : <Info size={19}/>}<strong>{level[0].toUpperCase() + level.slice(1)}</strong></span><small>{levelCopy[level]}</small></label>)}</div></fieldset>
           <div className="admin-field"><label htmlFor="alert-title">Headline <span>Required · plain text</span></label><input id="alert-title" value={draft.title} maxLength={80} onChange={(event) => update('title', event.target.value)} aria-invalid={Boolean(fieldErrors.title)} aria-describedby={fieldErrors.title ? 'title-error title-count' : 'title-count'} required/><div className="admin-field-meta">{fieldErrors.title ? <span id="title-error" className="field-error">{fieldErrors.title}</span> : <span/>}<small id="title-count">{draft.title.length}/80</small></div></div>
