@@ -9,12 +9,17 @@ import { checkAssistantRateLimit } from '@/lib/assistant/rate-limit'
 export const dynamic = 'force-dynamic'
 const noStore = { 'Cache-Control': 'no-store, max-age=0' }
 
+// Visitors may type up to 600 characters. Assistant turns echo the server's own
+// earlier answers back as history, so they must accept the full answer length.
+const MAX_QUESTION_CHARS = 600
+const MAX_ANSWER_CHARS = 1500
+
 const requestSchema = z.object({
   path: z.string().max(200),
-  messages: z.array(z.object({
-    role: z.enum(['user', 'assistant']),
-    content: z.string().trim().min(1).max(600),
-  })).min(1).max(12),
+  messages: z.array(z.discriminatedUnion('role', [
+    z.object({ role: z.literal('user'), content: z.string().trim().min(1).max(MAX_QUESTION_CHARS) }),
+    z.object({ role: z.literal('assistant'), content: z.string().trim().min(1).max(MAX_ANSWER_CHARS) }),
+  ])).min(1).max(12),
 })
 
 const answerTool = {
@@ -74,7 +79,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const result = await callClaudeTool<{ answer?: unknown; actions?: unknown }>({ system, messages, tool: answerTool })
-    const answer = typeof result.answer === 'string' ? result.answer.trim().slice(0, 1500) : ''
+    const answer = typeof result.answer === 'string' ? result.answer.trim().slice(0, MAX_ANSWER_CHARS) : ''
     if (!answer) throw new AssistantUnavailableError('Empty answer.')
     return NextResponse.json({ answer, actions: sanitizeActions(result.actions) }, { headers: noStore })
   } catch (error) {
