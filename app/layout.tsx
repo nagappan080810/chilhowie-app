@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { SiteBanners } from '@/components/site-banners'
 import { getLiveAlert } from '@/lib/alerts'
+import { AssistantWidget } from '@/components/assistant/assistant-widget'
 
 export const dynamic = 'force-dynamic'
 
@@ -52,6 +53,7 @@ export default async function RootLayout({
         <a className="skip-link" href="#main">Skip to main content</a>
         <SiteBanners initialAlert={initialAlert} />
         {children}
+        <AssistantWidget />
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
