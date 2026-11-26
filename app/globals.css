@@ -37,7 +37,7 @@
 @media(max-width:640px){.site-alert-inner{min-height:62px;gap:9px}.site-alert-icon{width:27px}.site-alert-copy strong{font-size:12px}.site-alert-copy p,.site-alert-link{font-size:10px}.admin-login-page{min-height:calc(100vh - 40px);padding:24px 16px}.admin-login-card{padding:27px 22px}.admin-topbar{align-items:flex-start;padding:12px 14px}.admin-top-actions{gap:10px;flex-wrap:wrap;justify-content:flex-end;font-size:10px}.admin-top-actions>span{display:none}.admin-layout{display:block}.admin-sidebar{display:flex;gap:7px;overflow-x:auto;padding:10px 12px;border-right:0;border-bottom:1px solid var(--line)}.admin-nav-label{display:none}.admin-nav-active,.admin-nav-disabled{min-width:max-content;min-height:36px;padding:7px 9px;font-size:11px}.admin-nav-disabled small{display:none}.admin-main{padding:24px 14px}.admin-page-heading{align-items:flex-start}.admin-page-heading h1{font-size:32px}.admin-view-link{font-size:10px}.admin-status-card{align-items:flex-start;flex-direction:column}.admin-status-actions{width:100%}.admin-status-actions button{flex:1}.admin-level-options{grid-template-columns:1fr}.admin-level-card{min-height:auto}.admin-two-fields{grid-template-columns:1fr;gap:0}.admin-editor,.admin-status-card,.admin-history{padding:16px}.admin-templates{align-items:flex-start}.admin-templates>span{width:100%}.coming-page,.not-found-page{padding:19px 0 45px}.breadcrumbs{margin-bottom:21px;font-size:10px}.coming-hero{min-height:0;padding:10px 0 22px}.coming-ridge{position:absolute;right:0;bottom:20px;width:30%;opacity:.5}.coming-page h1,.not-found-page h1{font-size:34px;max-width:85%}.coming-lead{font-size:16px}.coming-intro{font-size:12px}.coming-grid{grid-template-columns:1fr;gap:11px;margin-top:15px}.coming-card{padding:18px}.coming-card h2,.coming-popular h2,.about-comparison h2{font-size:20px}.coming-popular{margin-top:27px}.coming-popular .task-grid{gap:8px}.coming-popular .task-card{height:78px;padding:9px;gap:8px}.coming-popular .task-card .task-text strong{font-size:11px}.coming-popular .task-card .task-text small{font-size:9px}.about-row{grid-template-columns:1fr;gap:6px}.about-comparison>h2{font-size:18px}.about-demo p:not(.eyebrow){font-size:12px}.not-found-page{padding-top:38px}.not-found-search{margin:18px 0 27px}.footer-bottom{align-items:flex-start}.footer-bottom>div{order:3;width:100%;gap:12px}.site-alert-dismiss{width:40px;height:40px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 /* Website assistant (bottom left) */
-.assistant-root{position:fixed;left:20px;bottom:20px;z-index:60;font-family:Arial,'Public Sans',sans-serif}
+.assistant-root{position:fixed;right:20px;bottom:20px;z-index:60;font-family:Arial,'Public Sans',sans-serif}
 .assistant-launcher{display:inline-flex;align-items:center;gap:9px;min-height:48px;padding:0 18px 0 15px;border:0;border-radius:999px;background:var(--slate);color:#fff;font-size:14px;font-weight:700;box-shadow:0 10px 24px #1f3a4d40;cursor:pointer}
 .assistant-launcher:hover{background:#16303f}
 .assistant-panel{width:min(380px,calc(100vw - 32px));height:min(580px,calc(100vh - 110px));display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 22px 50px #1f3a4d33;overflow:hidden}
@@ -45,8 +45,10 @@
 .assistant-header h2{margin:0;font:600 17px/1.2 Georgia,'Source Serif 4',serif}
 .assistant-header p{margin:2px 0 0;font-size:11px;color:#d6e0de}
 .assistant-badge{width:34px;height:34px;border-radius:9px;background:#ffffff1f;display:grid;place-items:center;color:#f3d3b6;flex-shrink:0}
-.assistant-close{margin-left:auto;width:44px;height:44px;border:0;border-radius:8px;background:transparent;color:#fff;display:grid;place-items:center;cursor:pointer}
-.assistant-close:hover{background:#ffffff1a}
+.assistant-header-actions{margin-left:auto;display:flex;gap:2px}
+.assistant-icon-btn{width:44px;height:44px;border:0;border-radius:8px;background:transparent;color:#fff;display:grid;place-items:center;cursor:pointer}
+.assistant-icon-btn:hover:not(:disabled){background:#ffffff1a}
+.assistant-icon-btn:disabled{opacity:.45;cursor:not-allowed}
 .assistant-messages{flex:1;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:10px;background:var(--cream)}
 .assistant-msg{max-width:88%;padding:10px 13px;border-radius:12px;font-size:14px;line-height:1.5}
 .assistant-msg p{margin:0 0 6px}.assistant-msg p:last-child{margin-bottom:0}
@@ -70,7 +72,7 @@
 .assistant-form button{width:44px;height:44px;flex-shrink:0;border:0;border-radius:8px;background:var(--red);color:#fff;display:grid;place-items:center;cursor:pointer}
 .assistant-form button:disabled{background:#c9c6bf;cursor:not-allowed}
 .assistant-disclaimer{margin:0;padding:0 14px 11px;background:#fff;font-size:11px;line-height:1.4;color:var(--muted)}
-@media(max-width:560px){.assistant-root{left:12px;bottom:12px}.assistant-panel{width:calc(100vw - 24px);height:calc(100vh - 90px)}.assistant-launcher span{font-size:13px}}
+@media(max-width:560px){.assistant-root{right:12px;bottom:12px}.assistant-panel{width:calc(100vw - 24px);height:calc(100vh - 90px)}.assistant-launcher span{font-size:13px}}
 @media(prefers-reduced-motion:reduce){.assistant-typing i{animation:none;opacity:.7}}
 /* Admin: draft alert with AI */
 .admin-ai-drafter{margin:18px 0 6px;padding:15px 16px;border:1px solid #d9e2e8;border-radius:9px;background:#f4f8fa}
