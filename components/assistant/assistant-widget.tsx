@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ArrowRight, ArrowUp, MessageCircle, Phone, Sparkles, X } from 'lucide-react'
+import { ArrowRight, ArrowUp, MessageCircle, Phone, RotateCcw, Sparkles, X } from 'lucide-react'
 import { assistantPageFor } from '@/lib/assistant/pages'
 
 type Action = { label: string; href: string }
@@ -56,6 +56,8 @@ export function AssistantWidget() {
   const launcherRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
+  const requestRef = useRef<AbortController | null>(null)
+  const [notice, setNotice] = useState('')
   const titleId = useId()
 
   useEffect(() => { setMessages(loadMessages()) }, [])
@@ -82,6 +84,17 @@ export function AssistantWidget() {
     window.requestAnimationFrame(() => launcherRef.current?.focus())
   }
 
+  // Start over: clear the thread (and its saved copy) and drop any answer still on its way.
+  function startOver() {
+    requestRef.current?.abort()
+    requestRef.current = null
+    setBusy(false)
+    setMessages([])
+    setInput('')
+    setNotice('Started a new conversation.')
+    window.requestAnimationFrame(() => inputRef.current?.focus())
+  }
+
   async function ask(question: string) {
     const text = question.trim().slice(0, 600)
     if (!text || busy || !page) return
@@ -89,20 +102,28 @@ export function AssistantWidget() {
     setMessages(next)
     setInput('')
     setBusy(true)
+    setNotice('')
+    const controller = new AbortController()
+    requestRef.current = controller
     const history = next
       .filter((message): message is Extract<Message, { kind: 'user' | 'assistant' }> => message.kind === 'user' || message.kind === 'assistant')
       .slice(-10)
       .map((message) => ({ role: message.kind, content: message.content }))
     try {
-      const response = await fetch('/api/assistant', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path: page.path, messages: history }) })
+      const response = await fetch('/api/assistant', { signal: controller.signal, method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path: page.path, messages: history }) })
       const result = await response.json().catch(() => ({}))
       if (!response.ok || typeof result.answer !== 'string') throw new Error(result.error ?? 'The assistant is not available right now. Please call Town Hall at (276) 646-3232.')
+      if (controller.signal.aborted) return
       setMessages((current) => [...current, { kind: 'assistant', content: result.answer, actions: result.actions ?? [] }])
     } catch (error) {
+      if (controller.signal.aborted) return
       setMessages((current) => [...current, { kind: 'error', content: error instanceof Error ? error.message : 'Something went wrong.' }])
     } finally {
-      setBusy(false)
-      window.requestAnimationFrame(() => inputRef.current?.focus())
+      if (requestRef.current === controller) {
+        requestRef.current = null
+        setBusy(false)
+        window.requestAnimationFrame(() => inputRef.current?.focus())
+      }
     }
   }
 
@@ -116,8 +137,12 @@ export function AssistantWidget() {
       <header className="assistant-header">
         <span className="assistant-badge" aria-hidden="true"><Sparkles size={17}/></span>
         <div><h2 id={titleId}>Ask Chilhowie</h2><p>AI assistant · {page.title}</p></div>
-        <button type="button" className="assistant-close" aria-label="Close assistant" onClick={close}><X size={18}/></button>
+        <div className="assistant-header-actions">
+          <button type="button" className="assistant-icon-btn" aria-label="Start a new conversation" title="Start a new conversation" onClick={startOver} disabled={!conversation.length && !busy}><RotateCcw size={17}/></button>
+          <button type="button" className="assistant-icon-btn" aria-label="Close assistant" title="Close" onClick={close}><X size={18}/></button>
+        </div>
       </header>
+      <p className="sr-only" role="status">{notice}</p>
       <div className="assistant-messages" ref={listRef} aria-live="polite" aria-busy={busy}>
         {!conversation.length && <div className="assistant-msg assistant-msg-bot"><p>{page.greeting}</p></div>}
         {messages.map((message, index) => {
